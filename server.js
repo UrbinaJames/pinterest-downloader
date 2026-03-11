@@ -3,46 +3,46 @@ import fetch from "node-fetch";
 
 const app = express();
 
-app.get("/api", async (req, res) => {
+const PORT = process.env.PORT || 3000;
 
-  const url = req.query.url;
+app.get("/api", async (req,res)=>{
 
-  if (!url) {
-    return res.json({status:"error"});
-  }
+const url=req.query.url;
 
-  try {
+if(!url){
+return res.json({status:"error"});
+}
 
-    const response = await fetch(url,{
-      headers:{
-        "User-Agent":"Mozilla/5.0"
-      }
-    });
+try{
 
-    const html = await response.text();
+const r=await fetch(url,{
+headers:{
+"User-Agent":"Mozilla/5.0"
+}
+});
 
-    const match = html.match(/"contentUrl":"(.*?)"/);
+const html=await r.text();
 
-    if(match){
+const match=html.match(/"contentUrl":"(.*?)"/);
 
-      const video = match[1].replace(/\\\//g,"/");
+if(match){
 
-      return res.json({
-        video:video
-      });
+const video=match[1].replace(/\\\//g,"/");
 
-    }
+return res.json({video:video});
 
-    res.json({status:"error"});
+}
 
-  } catch(err){
+res.json({status:"error"});
 
-    res.json({status:"error"});
+}catch(e){
 
-  }
+res.json({status:"error"});
+
+}
 
 });
 
-app.listen(3000,()=>{
-console.log("Server running");
+app.listen(PORT,()=>{
+console.log("Server running on "+PORT);
 });
